@@ -1,18 +1,20 @@
-FROM node:24
+FROM node:24 AS builder
 
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm ci
 
-# Copy application code
 COPY . .
-
-# Build the project
 RUN npm run build
 
-# Copy entrypoint script
+FROM node:24
+
+WORKDIR /app
+COPY --from=builder /app/build ./
+
+RUN npm ci --omit=dev
+
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 

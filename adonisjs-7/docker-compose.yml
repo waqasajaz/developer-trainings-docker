@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3333"
+    environment:
+      NODE_ENV: production
+      PORT: 3333
+      HOST: 0.0.0.0
+      TZ: UTC
+      LOG_LEVEL: info
+      APP_KEY: ap_oNoJS6by8RYG6hPO2IXH4NlOjTkZx
+      APP_URL: http://app:3333
+      SESSION_DRIVER: cookie
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: adonisjs
+    volumes:
+      - ./tmp:/app/tmp
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: adonisjs
+      MYSQL_USER: adonisjs_user
+      MYSQL_PASSWORD: adonisjs_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
